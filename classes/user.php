@@ -2,6 +2,13 @@
 require 'classes/jwt.php';
 
 class User {
+
+  public static $lnk;
+
+  public static function init($lnk) {
+    self::$lnk = $lnk;
+  }
+
   public static function logout() {
     setcookie("auth", NULL ,time()-10);  
   }
@@ -9,7 +16,6 @@ class User {
     $data=array();
     $data['username']=$user;
     return JWT::sign($data);
-
   } 
 
   public static function addfile($user) {
@@ -34,11 +40,11 @@ class User {
     $data = JWT::verify($auth);
     $user = $data['username'];
     $sql = "SELECT * FROM users where login=\"";
-    $sql.= mysql_real_escape_string($user);
+    $sql.= mysqli_real_escape_string(self::$lnk, $user);
     $sql.= "\"";
-    $result = mysql_query($sql);
+    $result = mysqli_query(self::$lnk, $sql);
     if ($result) {
-      $row = mysql_fetch_assoc($result);
+      $row = mysqli_fetch_assoc($result);
       return $row['login'];
     }
     else {
@@ -47,13 +53,13 @@ class User {
   }
   public static function login($user, $password) {
     $sql = "SELECT * FROM users where login=\"";
-    $sql.= mysql_real_escape_string($user);
+    $sql.= mysqli_real_escape_string(self::$lnk, $user);
     $sql.= "\" and password=md5(\"";
-    $sql.= mysql_real_escape_string($password);
+    $sql.= mysqli_real_escape_string(self::$lnk, $password);
     $sql.= "\")";
-    $result = mysql_query($sql);
+    $result = mysqli_query(self::$lnk, $sql);
     if ($result) {
-      $row = mysql_fetch_assoc($result);
+      $row = mysqli_fetch_assoc($result);
       if ($user === $row['login']) {
         return TRUE;
       }
@@ -65,16 +71,16 @@ class User {
   }
   public static function register($user, $password) {
     $sql = "INSERT INTO  users (login,password) values (\"";
-    $sql.= mysql_real_escape_string($user);
+    $sql.= mysqli_real_escape_string(self::$lnk, $user);
     $sql.= "\", md5(\"";
-    $sql.= mysql_real_escape_string($password);
+    $sql.= mysqli_real_escape_string(self::$lnk, $password);
     $sql.= "\"))";
-    $result = mysql_query($sql);
+    $result = mysqli_query(self::$lnk, $sql);
     if ($result) {
       return TRUE;
     }
     else 
-      echo mysql_error();
+      echo mysqli_error(self::$lnk);
     return FALSE;
     //die("invalid username/password");
   }

@@ -2,6 +2,12 @@
   require 'classes/db.php';
   require 'classes/phpfix.php';
   require 'classes/user.php';
+
+  // WARNING: only do this once, in this main index.php file
+  require __DIR__ . '/classes/db.php';
+  require __DIR__ . '/classes/user.php';
+  User::init($lnk);
+
   if (isset($_COOKIE['auth'])){
     $user = User::getuserfromcookie($_COOKIE['auth']);
     if (!isset($user)) {
