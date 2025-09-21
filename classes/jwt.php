@@ -16,7 +16,7 @@ class JWT {
   } 
 
   public static function signature($data) {
-    return hash("sha256","donth4ckmebr0".$data);
+    return hash("sha256", $_ENV['jwt_sign_secret'].$data);
   }
 
   public static function verify($auth) {
