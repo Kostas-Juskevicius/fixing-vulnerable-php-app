@@ -37,7 +37,7 @@
         <?php } ?> 
       </ul>
     <h3>Upload (only PDF)</h3>
-      <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+      <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="post" enctype="multipart/form-data">
             <input type="file" name="file" id="file">
             <input type="submit" value="Upload your PDF" name="submit">
       </form>

@@ -1,6 +1,5 @@
 <?php
   require 'classes/db.php';
-  require 'classes/phpfix.php';
   require 'classes/user.php';
 
   if ((isset($_POST['username']) and isset($_POST['password']))){
