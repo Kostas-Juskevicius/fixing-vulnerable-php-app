@@ -2,6 +2,8 @@
   require 'classes/db.php';
   require 'classes/user.php';
 
+  require_once __DIR__ . '/bootstrap_db.php';
+
   if ((isset($_POST['username']) and isset($_POST['password']))){
     if (User::login($_POST['username'], $_POST['password'])){
       setcookie("auth", User::createcookie($_POST['username'], $_POST['password']));

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../bootstrap_env.php';
+
 class JWT {
   
   public static function sign($data) {

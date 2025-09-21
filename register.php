@@ -2,6 +2,8 @@
   require 'classes/db.php';
   require 'classes/user.php';
 
+  require_once __DIR__ . '/bootstrap_db.php';
+
   if ((isset($_POST['username']) and isset($_POST['password']) and isset($_POST['password_again']))){
     if ($_POST['password'] === $_POST['password_again']) {
       if (User::register($_POST['username'], $_POST['password'])){
