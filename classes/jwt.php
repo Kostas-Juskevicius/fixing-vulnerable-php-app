@@ -6,8 +6,8 @@ class JWT {
   
   public static function sign($data) {
     $header_data = ['alg' => 'HS256', 'iat' => time()]; 
-    $header = urlb64_encode(json_encode($header_data)); 
-    $payload = urlb64_encode(json_encode($data)); 
+    $header = JWT::urlb64_encode(json_encode($header_data)); 
+    $payload = JWT::urlb64_encode(json_encode($data)); 
     $to_sign = $header . "." . $payload;
     return $to_sign . "." . JWT::signature($to_sign); 
   } 
@@ -17,25 +17,13 @@ class JWT {
   }
 
   public static function verify($auth) {
-    list($h64,$d64,$sign) = explode(".",$auth);
-    if (!empty($sign) and (JWT::signature($h64.".".$d64) != $sign)) {
+    list($h64, $d64, $sign) = explode(".", $auth);
+    if (!empty($sign) and !hash_equals(JWT::signature($h64 . "." . $d64), $sign)) {
       die("Invalid Signature");
     }
-    $header = urlb64_decode($h64);
-    $data = urlb64_decode($d64);
-    return JWT::parse_json($data);
-  }
-  
-  public static function parse_json($str) {
-    $data = explode(",",rtrim(ltrim($str, '{'), '}'));
-    $ret = array();
-    foreach($data as $entry) {
-      list($key, $value) =  explode(":",$entry);
-      $key = rtrim(ltrim($key, '"'), '"');
-      $value = rtrim(ltrim($value, '"'), '"');
-      $ret[$key] = $value;
-    }
-    return $ret;
+    $header = JWT::urlb64_decode($h64);
+    $data = JWT::urlb64_decode($d64);
+    return json_decode($data, true);
   }
 
   public static function urlb64_encode($str) {
