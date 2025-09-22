@@ -5,14 +5,11 @@ require_once __DIR__ . '/../bootstrap_env.php';
 class JWT {
   
   public static function sign($data) {
-    $header = urlb64_encode('{"alg":"HS256","iat":'.time().'}'); 
-    $token = "{";
-    foreach($data as $key=>$value) {
-      $token.= '"'.$key.'":"'.$value.'",';
-    } 
-    $token .= "}";
-    $to_sign = $header.".".urlb64_encode($token);
-    return $to_sign.".".JWT::signature($to_sign); 
+    $header_data = ['alg' => 'HS256', 'iat' => time()]; 
+    $header = urlb64_encode(json_encode($header_data)); 
+    $payload = urlb64_encode(json_encode($data)); 
+    $to_sign = $header . "." . $payload;
+    return $to_sign . "." . JWT::signature($to_sign); 
   } 
 
   public static function signature($data) {
