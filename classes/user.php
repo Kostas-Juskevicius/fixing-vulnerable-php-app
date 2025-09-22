@@ -51,30 +51,31 @@ class User {
       return NULL;
     }
   }
+
   public static function login($user, $password) {
     $sql = "SELECT * FROM users where login=\"";
     $sql.= mysqli_real_escape_string(self::$lnk, $user);
-    $sql.= "\" and password=md5(\"";
-    $sql.= mysqli_real_escape_string(self::$lnk, $password);
-    $sql.= "\")";
+    $sql.= "\"";
+
     $result = mysqli_query(self::$lnk, $sql);
     if ($result) {
       $row = mysqli_fetch_assoc($result);
-      if ($user === $row['login']) {
+      if ($user === $row['login'] and password_verify($password, $row['password'])) {
         return TRUE;
       }
     }
-    //else 
-      //echo mysql_error();
     return FALSE;
-    //die("invalid username/password");
   }
+
   public static function register($user, $password) {
-    $sql = "INSERT INTO  users (login,password) values (\"";
+    $phash = password_hash($password, PASSWORD_BCRYPT);
+
+    $sql = "INSERT INTO users (login ,password) values (\"";
     $sql.= mysqli_real_escape_string(self::$lnk, $user);
-    $sql.= "\", md5(\"";
-    $sql.= mysqli_real_escape_string(self::$lnk, $password);
-    $sql.= "\"))";
+    $sql.= "\", \"";
+    $sql.= $phash;
+    $sql.= "\")";
+
     $result = mysqli_query(self::$lnk, $sql);
     if ($result) {
       return TRUE;
@@ -82,10 +83,7 @@ class User {
     else 
       echo mysqli_error(self::$lnk);
     return FALSE;
-    //die("invalid username/password");
   }
 }
-
-
 
 ?>
